@@ -15,8 +15,8 @@ game.PlayerEntity = me.Entity.extend({
                 }
             }]);
         this.type = "PlayerEntity";
-        this.health = 20;
-        this.body.setVelocity(5, 20);
+        this.health = game.data.playerHealth;
+        this.body.setVelocity(game.data.playerMoveSpeed, 20);
 //        keeps track of which direction your character is going
         this.facing = "right";
         this.now = new Date().getTime();
@@ -105,10 +105,10 @@ game.PlayerEntity = me.Entity.extend({
                 this.body.vel.x = 0;
                 this.pos.x = this.pos.x + 1;
             }
-            if (this.renderable.isCurrentAnimation("attack") && this.now - this.lastHit >= 400) {
+            if (this.renderable.isCurrentAnimation("attack") && this.now - this.lastHit >= game.data.playerAttackTimer) {
                 console.log("tower Hit");
                 this.lastHit = this.now;
-                response.b.loseHealth();
+                response.b.loseHealth(game.data.playerAttack);
             }
         }
     }
@@ -126,7 +126,7 @@ game.PlayerBaseEntity = me.Entity.extend({
                 }
             }]);
         this.broken = false;
-        this.health = 10;
+        this.health = game.data.playerBaseHealth;
         this.alwaysUpdate = true;
         this.body.onCollison = this.onCollision.bind(this);
 
@@ -166,7 +166,7 @@ game.EnemyBaseEntity = me.Entity.extend({
                 }
             }]);
         this.broken = false;
-        this.health = 10;
+        this.health = game.data.enemyBaseHealth;
         this.alwaysUpdate = true;
         this.body.onCollison = this.onCollision.bind(this);
 
@@ -204,7 +204,7 @@ game.EnemyCreep = me.Entity.extend({
                 }
 
             }]);
-        this.health = 10;
+        this.health = game.data.enemyCreepHealth;
         this.alwaysUpdate = true;
 //        this.attacking lets us know if the enemy is currently attacking 
         this.attacking = false;
@@ -250,7 +250,7 @@ game.EnemyCreep = me.Entity.extend({
                 this.lastHit = this.now;
 //        makes the player base calls its losehealth function and passes
 //        damaage of 1
-                response.b.loseHealth(1);
+                response.b.loseHealth(game.data.enemyCreepAttack);
 
             }
         } else if (response.b.type === 'PlayerEntity') {
@@ -270,7 +270,7 @@ game.EnemyCreep = me.Entity.extend({
                 this.lastHit = this.now;
 //        makes the player calls its losehealth function and passes
 //        damaage of 1
-                response.b.loseHealth(1);
+                response.b.loseHealth(game.data.enemyCreepAttack);
 
             }
         }
