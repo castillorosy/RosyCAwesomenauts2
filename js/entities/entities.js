@@ -31,6 +31,10 @@ game.PlayerEntity = me.Entity.extend({
     },
     update: function(delta) {
         this.now = new Date().getTime();
+        
+        if(this.health <=0){
+          this.dead = true;
+          
         if (me.input.isKeyPressed("right")) {
 //        sets the position of my x by the velocity defined
 //       setVelocity() and multiplying it by me.timer.tick.
@@ -93,17 +97,17 @@ game.PlayerEntity = me.Entity.extend({
             var ydif = this.pos.y - response.b.pos.y;
             var xdif = this.pos.x - response.b.pos.x;
 
-            // console.log("xdif " + xdif + " ydif " + ydif);
+           console.log("xdif " + xdif + " ydif " + ydif);
             if (ydif < -40 && xdif < 70 && xdif > -35) {
                 this.body.falling = false;
                 this.body.vel.y = -1;
             }
             else if (xdif > -35 && this.facing === 'right' && (xdif < 0)) {
                 this.body.vel.x = 0;
-                this.body.x = this.pos.x - 1;
+                //this.body.x = this.pos.x - 1;
             } else if (xdif < 60 && this.facing === 'left' && xdif > 0) {
                 this.body.vel.x = 0;
-                this.pos.x = this.pos.x + 1;
+               // this.pos.x = this.pos.x + 1;
             }
             if (this.renderable.isCurrentAnimation("attack") && this.now - this.lastHit >= game.data.playerAttackTimer) {
                 console.log("tower Hit");
@@ -284,7 +288,9 @@ game.GameManager = Object.extend({
     },
     update: function() {
         this.now = new Date().getTime();
-
+        if(game.data.player.dead){
+            this.resetPlayer(0, )
+        }
         if (Math.round(this.now / 1000 % 10 === 0 && (this.now - this.lastCreep >= 1000))) {
             this.lastCreep = this.now;
             var creepe = me.pool.pull("EnemyCreep", 1000, 0, {});
