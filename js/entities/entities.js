@@ -34,7 +34,7 @@ game.PlayerEntity = me.Entity.extend({
         
         if(this.health <=0){
           this.dead = true;
-          
+      }
         if (me.input.isKeyPressed("right")) {
 //        sets the position of my x by the velocity defined
 //       setVelocity() and multiplying it by me.timer.tick.
@@ -87,10 +87,26 @@ game.PlayerEntity = me.Entity.extend({
         this.body.update(delta);
         this._super(me.Entity, "update", [delta]);
         return true;
+    
     },
     loseHealth: function(damage) {
         this.health = this.health - damage;
-        console.log(this.health);
+    },
+        updaate: function(delta){
+            console.log(this.health);
+            if(this.health<=0){
+            me.game.world.removeChild(this);
+        }
+        this.now = new Date().getTime();
+        
+        this.body.vel.x -= this.body.accel.x * me.timer.tick;
+        
+        me.collision.check(this, true, this.collideHandler.bind(this), true);
+        
+        this.body.update(delta);
+        
+        this._super(me.Entity, "update", [delta]);
+        return true;
     },
     collideHandler: function(response) {
         if (response.b.type === "EnemyBaseEntity") {
@@ -289,7 +305,8 @@ game.GameManager = Object.extend({
     update: function() {
         this.now = new Date().getTime();
         if(game.data.player.dead){
-            this.resetPlayer(0, )
+        me.game.world.removeChild(game.data.player);    
+        me.state.current().resetPlayer(10, 0);
         }
         if (Math.round(this.now / 1000 % 10 === 0 && (this.now - this.lastCreep >= 1000))) {
             this.lastCreep = this.now;
